@@ -84,6 +84,7 @@
 #![deny(unused_mut)]
 #![deny(dead_code)]
 #![deny(unused_imports)]
+#![cfg_attr(debug_assertions, allow(unused_imports))]
 #![deny(missing_docs)]
 
 #[cfg(target_pointer_width = "16")]
