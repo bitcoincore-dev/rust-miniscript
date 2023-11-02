@@ -83,6 +83,7 @@
 #![deny(non_snake_case)]
 #![deny(unused_mut)]
 #![deny(dead_code)]
+#![cfg_attr(debug_assertions, allow(dead_code))]
 #![deny(unused_imports)]
 #![cfg_attr(debug_assertions, allow(unused_imports))]
 #![deny(missing_docs)]
