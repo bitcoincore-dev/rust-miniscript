@@ -82,9 +82,11 @@
 #![deny(non_camel_case_types)]
 #![deny(non_snake_case)]
 #![deny(unused_mut)]
-#![deny(dead_code)]
+#![cfg(not(dev))]
+  #![deny(dead_code)]
 #![cfg_attr(debug_assertions, allow(dead_code))]
-#![deny(unused_imports)]
+#![cfg(not(dev))]
+  #![deny(unused_imports)]
 #![cfg_attr(debug_assertions, allow(unused_imports))]
 #![deny(missing_docs)]
 
@@ -855,7 +857,9 @@ mod prelude {
         }
     }
 
-    #[cfg(all(not(feature = "std"), not(test)))]
+    // #[cfg(all(not(feature = "std"), debug))]
+    // println!("....................{}", debug);
+    #[cfg(all(not(feature = "std"), debug))]
     pub use alloc::{
         borrow::{Borrow, Cow, ToOwned},
         boxed::Box,
@@ -865,7 +869,17 @@ mod prelude {
         sync,
         vec::Vec,
     };
-    #[cfg(any(feature = "std", test))]
+    #[cfg(all(not(feature = "std"), not(test), not(debug)))]
+    pub use alloc::{
+        borrow::{Borrow, Cow, ToOwned},
+        boxed::Box,
+        collections::{vec_deque::VecDeque, BTreeMap, BTreeSet, BinaryHeap},
+        rc, slice,
+        string::{String, ToString},
+        sync,
+        vec::Vec,
+    };
+    #[cfg(any(feature = "std", test, not(debug)))]
     pub use std::{
         borrow::{Borrow, Cow, ToOwned},
         boxed::Box,
