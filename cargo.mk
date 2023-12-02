@@ -1,7 +1,20 @@
 ifneq ($(features),)
 FEATURES=$(features)
 else
-FEATURES='base64 compiler serde std'
+FEATURES=base64 compiler serde std
+endif
+ifneq ($(quiet),)
+QUIET=$(quiet)
+else
+## 	:
+## EXAMPLES:
+## 	:
+## --quiet is default
+## this enables json only output for
+## examples:
+## psbt_sign_finalize
+## for further testing scenarios
+QUIET=--quiet
 endif
 
 ## htlc
@@ -30,6 +43,11 @@ cargo-build-release:### 	cargo-build-release
 ## 	make cargo-build-release q=true
 	@. $(HOME)/.cargo/env
 	@cargo b $(QUIET) --profile=$(PROFILE)
+cargo-profile-release-with-debug:### 	cargo-profile-release-with-debug
+##:cargo-profile-release-with-debug
+## cargo b --release profile=release-with-debug
+	@. $(HOME)/.cargo/env
+	$(MAKE) cargo-b profile=release-with-debug
 cargo-check:### 	cargo-check
 ## cargo c
 	@. $(HOME)/.cargo/env
@@ -56,22 +74,39 @@ cargo-doc:### 	cargo-doc
 ## taproot
 ## xpub_descriptors
 ## verify_tx ## build last due to invoked error
+## $ cargo run --quiet
+##             --features="base64 compiler serde std"
+##             --example psbt_sign_finalize
 
-cargo-examples:cargo-example-htlc cargo-example-parse cargo-example-psbt_sign_finalize cargo-example-sign_multisig cargo-example-taproot cargo-example-xpub_descriptors cargo-example-verify_tx
-cargo-htlc:### 	cargo-example-htlc
-	cargo run --features="base64 compiler serde std" --example htlc
-cargo-parse:### 	cargo-example-parse
-	cargo run --features="base64 compiler serde std" --example parse
-cargo-psbt_sign_finalize:### 	cargo-example-psbt_sign_finalize
-	cargo run --features="base64 compiler serde std" --example psbt_sign_finalize
-cargo-sign_multisig:### 	cargo-example-sign_multisig
-	cargo run --features="base64 compiler serde std" --example sign_multisig
-cargo-taproot:### 	cargo-example-taproot
-	cargo run --features="base64 compiler serde std" --example taproot
-cargo-verify_tx:### 	cargo-example-verify_tx
-	cargo run --features="base64 compiler serde std" --example verify_tx
-cargo-xpub_descriptors:### 	cargo-example-xpub_descriptors
-	cargo run --features=$(FEATURES) --example xpub_descriptors
+cargo-examples:cargo-htlc cargo-parse cargo-psbt_sign_finalize cargo-sign_multisig cargo-taproot cargo-xpub_descriptors cargo-verify_tx
+
+cargo-htlc:### 	cargo-htlc
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example htlc
+
+cargo-parse:### 	cargo-parse
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example parse
+
+cargo-psbt_sign_finalize:### 	cargo-psbt_sign_finalize
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example psbt_sign_finalize
+
+cargo-sign_multisig:### 	cargo-sign_multisig
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example sign_multisig
+
+cargo-taproot:### 	cargo-taproot
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example taproot
+
+cargo-verify_tx:### 	cargo-verify_tx
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features="$(FEATURES)" --example verify_tx
+
+cargo-xpub_descriptors:### 	cargo-xpub_descriptors
+## @echo $(FEATURES)
+	@cargo run $(QUIET) --features=$(FEATURES) --example xpub_descriptors
 
 # vim: set noexpandtab:
 # vim: set setfiletype make
