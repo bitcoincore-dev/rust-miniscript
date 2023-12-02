@@ -2,7 +2,7 @@
 
 set -ex
 
-FEATURES="compiler serde rand base64"
+FEATURES="compiler serde rand base64 std"
 
 cargo --version
 rustc --version
