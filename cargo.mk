@@ -1,3 +1,17 @@
+ifneq ($(features),)
+FEATURES=$(features)
+else
+FEATURES='base64 compiler serde std'
+endif
+
+## htlc
+## parse
+## psbt_sign_finalize
+## sign_multisig
+## taproot
+## verify_tx
+## xpub_descriptors
+
 ##
 ##make cargo-*
 cargo-help:### 	cargo-help
@@ -34,6 +48,30 @@ cargo-report:### 	cargo-report
 	cargo report future-incompatibilities --id 1
 cargo-doc:### 	cargo-doc
 	@cargo doc --no-deps --open
+
+## htlc
+## parse
+## psbt_sign_finalize
+## sign_multisig
+## taproot
+## xpub_descriptors
+## verify_tx ## build last due to invoked error
+
+cargo-examples:cargo-example-htlc cargo-example-parse cargo-example-psbt_sign_finalize cargo-example-sign_multisig cargo-example-taproot cargo-example-xpub_descriptors cargo-example-verify_tx
+cargo-htlc:### 	cargo-example-htlc
+	cargo run --features="base64 compiler serde std" --example htlc
+cargo-parse:### 	cargo-example-parse
+	cargo run --features="base64 compiler serde std" --example parse
+cargo-psbt_sign_finalize:### 	cargo-example-psbt_sign_finalize
+	cargo run --features="base64 compiler serde std" --example psbt_sign_finalize
+cargo-sign_multisig:### 	cargo-example-sign_multisig
+	cargo run --features="base64 compiler serde std" --example sign_multisig
+cargo-taproot:### 	cargo-example-taproot
+	cargo run --features="base64 compiler serde std" --example taproot
+cargo-verify_tx:### 	cargo-example-verify_tx
+	cargo run --features="base64 compiler serde std" --example verify_tx
+cargo-xpub_descriptors:### 	cargo-example-xpub_descriptors
+	cargo run --features=$(FEATURES) --example xpub_descriptors
 
 # vim: set noexpandtab:
 # vim: set setfiletype make
