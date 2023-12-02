@@ -7,9 +7,33 @@ use miniscript::bitcoin::consensus::encode::deserialize;
 use miniscript::bitcoin::hashes::hex::FromHex;
 use miniscript::bitcoin::psbt::{self, Psbt};
 use miniscript::bitcoin::sighash::SighashCache;
+#[cfg(not(debug_assertions))]
 use miniscript::bitcoin::{
-    self, base64, secp256k1, Address, Network, OutPoint, PrivateKey, Script, Sequence, Transaction,
-    TxIn, TxOut,
+    self,
+    base64,
+    secp256k1,
+    Address,
+    Network,
+    OutPoint,
+    PrivateKey,
+    Script,
+    Sequence,
+    Transaction,
+    TxIn,
+    TxOut,
+};
+#[cfg(debug_assertions)]
+use miniscript::bitcoin::{
+    self,
+    secp256k1,
+    Address,
+    OutPoint,
+    PrivateKey,
+    Script,
+    Sequence,
+    Transaction,
+    TxIn,
+    TxOut,
 };
 use miniscript::psbt::{PsbtExt, PsbtInputExt};
 use miniscript::Descriptor;
@@ -21,35 +45,46 @@ fn main() {
     let bridge_descriptor = Descriptor::from_str(&s).unwrap();
     //let bridge_descriptor = Descriptor::<bitcoin::PublicKey>::from_str(&s).expect("parse descriptor string");
     assert!(bridge_descriptor.sanity_check().is_ok());
-    println!("Bridge pubkey script: {}", bridge_descriptor.script_pubkey());
-    println!("Bridge address: {}", bridge_descriptor.address(Network::Regtest).unwrap());
+
+    #[cfg(not(debug_assertions))]
+        println!("Bridge pubkey script: {}", bridge_descriptor.script_pubkey());
+    #[cfg(not(debug_assertions))]
+        println!("Bridge address: {}", bridge_descriptor.address(Network::Regtest).unwrap());
+
+    #[cfg(not(debug_assertions))]
     println!(
-        "Weight for witness satisfaction cost {}",
+        "Weight for witness satisfaction cost {:?}",
         bridge_descriptor.max_weight_to_satisfy().unwrap()
     );
 
     let master_private_key_str = "cQhdvB3McbBJdx78VSSumqoHQiSXs75qwLptqwxSQBNBMDxafvaw";
     let _master_private_key =
         PrivateKey::from_str(master_private_key_str).expect("Can't create private key");
+
+    #[cfg(not(debug_assertions))]
     println!("Master public key: {}", _master_private_key.public_key(&secp256k1));
+
 
     let backup1_private_key_str = "cWA34TkfWyHa3d4Vb2jNQvsWJGAHdCTNH73Rht7kAz6vQJcassky";
     let backup1_private =
         PrivateKey::from_str(backup1_private_key_str).expect("Can't create private key");
 
-    println!("Backup1 public key: {}", backup1_private.public_key(&secp256k1));
+    #[cfg(not(debug_assertions))]
+        println!("Backup1 public key: {}", backup1_private.public_key(&secp256k1));
 
     let backup2_private_key_str = "cPJFWUKk8sdL7pcDKrmNiWUyqgovimmhaaZ8WwsByDaJ45qLREkh";
     let backup2_private =
         PrivateKey::from_str(backup2_private_key_str).expect("Can't create private key");
 
-    println!("Backup2 public key: {}", backup2_private.public_key(&secp256k1));
+    #[cfg(not(debug_assertions))]
+        println!("Backup2 public key: {}", backup2_private.public_key(&secp256k1));
 
     let backup3_private_key_str = "cT5cH9UVm81W5QAf5KABXb23RKNSMbMzMx85y6R2mF42L94YwKX6";
     let _backup3_private =
         PrivateKey::from_str(backup3_private_key_str).expect("Can't create private key");
 
-    println!("Backup3 public key: {}", _backup3_private.public_key(&secp256k1));
+    #[cfg(not(debug_assertions))]
+        println!("Backup3 public key: {}", _backup3_private.public_key(&secp256k1));
 
     let spend_tx = Transaction {
         version: 2,
@@ -132,15 +167,22 @@ fn main() {
         .partial_sigs
         .insert(pk1, bitcoin::ecdsa::Signature { sig: sig1, hash_ty: hash_ty });
 
-    println!("{:#?}", psbt);
+    //#[cfg(not(debug_assertions))]
+    println!("[ {:#?} ]", psbt);
 
+    #[cfg(not(debug_assertions))]
     let serialized = psbt.serialize();
+    #[cfg(not(debug_assertions))]
     println!("{}", base64::encode(&serialized));
 
+    #[cfg(not(debug_assertions))]
     psbt.finalize_mut(&secp256k1).unwrap();
+    #[cfg(not(debug_assertions))]
     println!("{:#?}", psbt);
 
+    #[cfg(not(debug_assertions))]
     let tx = psbt.extract_tx();
+    #[cfg(not(debug_assertions))]
     println!("{}", bitcoin::consensus::encode::serialize_hex(&tx));
 }
 
